@@ -1,0 +1,53 @@
+---
+description: BusGo TypeScript, React, Tailwind, API, Zod, and Prisma conventions
+alwaysApply: true
+---
+
+# BusGo conventions
+
+TypeScript strict mode stays on. Do not use `any`, `@ts-ignore`, or `as` to skip a real type.
+
+Use function components. Do not use class components.
+
+```tsx
+// ❌ BAD
+class SearchPage extends React.Component {}
+
+// ✅ GOOD
+export function SearchPage() {
+  return <main>Search buses</main>;
+}
+```
+
+Style with Tailwind utility classes only. Do not add CSS modules, styled-components, or new component stylesheets.
+
+```tsx
+// ❌ BAD
+<button style={{ backgroundColor: "#d84e55" }}>Search</button>
+
+// ✅ GOOD
+<button className="rounded-2xl bg-brand px-6 font-extrabold text-white">Search</button>
+```
+
+HTTP handlers live under `app/api` as `route.ts` files. Do not add a `pages/api` route.
+
+Validate request bodies and search params with Zod before use.
+
+```ts
+// ❌ BAD
+const seatIds = body.seatIds as string[];
+
+// ✅ GOOD
+const payload = bookingSchema.parse(body);
+```
+
+Read and write the database only through `lib/db.ts`. Do not construct a Prisma or Postgres client inside a route, page, or component.
+
+```ts
+// ❌ BAD
+import { Pool } from "pg";
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+// ✅ GOOD
+import { db } from "@/lib/db";
+```
